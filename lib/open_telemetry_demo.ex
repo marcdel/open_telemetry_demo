@@ -3,6 +3,9 @@ defmodule OpenTelemetryDemo do
   Documentation for `OpenTelemetryDemo`.
   """
 
+  require OpenTelemetry.Span
+  require OpenTelemetry.Tracer
+
   @doc """
   Hello world.
 
@@ -13,6 +16,12 @@ defmodule OpenTelemetryDemo do
 
   """
   def hello do
-    :world
+    OpenTelemetry.Tracer.with_span "hello method" do
+      val = :world
+
+      OpenTelemetry.Span.set_attributes(result: val)
+
+      val
+    end
   end
 end
