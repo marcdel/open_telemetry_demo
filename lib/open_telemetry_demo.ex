@@ -6,22 +6,31 @@ defmodule OpenTelemetryDemo do
   require OpenTelemetry.Span
   require OpenTelemetry.Tracer
 
-  @doc """
-  Hello world.
+  def method_one do
+    parent_ctx = OpenTelemetry.Tracer.current_span_ctx()
 
-  ## Examples
+    OpenTelemetry.Tracer.with_span "method_one", %{parent: parent_ctx} do
+      method_two()
 
-      iex> OpenTelemetryDemo.hello()
-      :world
+      {:ok, 1}
+    end
+  end
 
-  """
-  def hello do
-    OpenTelemetry.Tracer.with_span "hello method" do
-      val = :world
+  def method_two do
+    parent_ctx = OpenTelemetry.Tracer.current_span_ctx()
 
-      OpenTelemetry.Span.set_attributes(result: val)
+    OpenTelemetry.Tracer.with_span "method_two", %{parent: parent_ctx} do
+      method_three()
 
-      val
+      {:ok, 2}
+    end
+  end
+
+  def method_three do
+    parent_ctx = OpenTelemetry.Tracer.current_span_ctx()
+
+    OpenTelemetry.Tracer.with_span "method_three", %{parent: parent_ctx} do
+      {:ok, 3}
     end
   end
 end
